@@ -1,4 +1,7 @@
-let quizData = []; // To store questions for scoring 
+// Global Variables
+let quizAttempts;
+let userName;
+let currentQuiz; // full quiz object (title + questions)
 
 window.onload = function () {
     const questionsWrapper = document.querySelector('#questions-wrapper');
