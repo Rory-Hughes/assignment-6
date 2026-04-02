@@ -62,10 +62,40 @@ function displayResults(quizAttempt, containerElement) {
 
 
 window.onload = function () {
-    const questionsWrapper = document.querySelector('#questions-wrapper');
-    const tabContainer = document.querySelector('#tab-container');
+    
+    initStorage();
+
+    // --- DOM references ---
+    const loginSection = document.querySelector('#login-section');
+    const usernameInput = document.querySelector('#username-input');
+    const loginBtn = document.querySelector('#login-btn');
+    const loginError = document.querySelector('#login-error');
+    const loggedInUser = document.querySelector('#logged-in-user');
+    const mainApp = document.querySelector('#main-app');
+
+    const tabQuizBtn = document.querySelector('#tab-quiz');
+    const tabAttemptsBtn = document.querySelector('#tab-attempts');
+    const quizPanel = document.querySelector('#quiz-panel');
+    const attemptsPanel = document.querySelector('#attempts-panel');
+
+    const quizSelect = document.querySelector('#quiz-select');
+    const loadQuizBtn = document.querySelector('#load-quiz-btn');
+    const quizLoadError = document.querySelector('#quiz-load-error');
     const quizHeader = document.querySelector('#quiz-header');
+    const tabContainer = document.querySelector('#tab-container');
+    const questionsWrapper = document.querySelector('#questions-wrapper');
     const submitBtn = document.querySelector('#submit-btn');
+    const submitError = document.querySelector('#submit-error');
+    const resultsContainer = document.querySelector('#results-container');
+
+    const loadAttemptsBtn = document.querySelector('#load-attempts-btn');
+    const attemptsTable = document.querySelector('#attempts-table');
+    const attemptsTbody = document.querySelector('#attempts-tbody');
+    const noAttemptsMsg = document.querySelector('#no-attempts-msg');
+    const showDetailsBtn = document.querySelector('#show-details-btn');
+    const attemptDetailsContainer = document.querySelector('#attempt-details-container');
+
+    
     const url = "data/MathQuiz.json";
 
     const xhr = new XMLHttpRequest();
