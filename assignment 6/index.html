@@ -1,28 +1,113 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>A6 - Quiz App - Enhanced</title>
-        <link rel="stylesheet" href="style.css">
-        <script src="quiz.js"></script>
-    </head>
-    <body>
-        <div id="title-bar">A6 - Quiz App - Enhanced <span id="logged-in-user"></span></div>
-        <div id="login-section">
-            <input type="text"
+<head>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A6 - Quiz App - Enhanced</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ================================ -->
+    <!-- TITLE BAR: always visible        -->
+    <!-- ================================ -->
+    <div id="title-bar">
+        <span id="app-title">Quiz App</span>
+        <span id="logged-in-user"></span>
+    </div>
+
+    <!-- ================================ -->
+    <!-- LOGIN SECTION: visible on load,  -->
+    <!-- hidden once user has logged in   -->
+    <!-- ================================ -->
+    <div id="login-section">
+        <h2>Welcome! Please enter your name to begin.</h2>
+        <label for="username-input">Your Name:</label>
+        <input type="text" id="username-input" placeholder="Enter your name">
+        <button id="login-btn">Start</button>
+        <p id="login-error" class="error-text hide">Please enter your name to continue.</p>
+    </div>
+
+    <!-- ================================ -->
+    <!-- MAIN APP: hidden until login     -->
+    <!-- ================================ -->
+    <div id="main-app" class="hide">
+
+        <!-- App-level Tab Menu -->
+        <div id="app-tab-container">
+            <button id="tab-quiz" class="tab-button active">Take a Quiz</button>
+            <button id="tab-attempts" class="tab-button">Previous Attempts</button>
         </div>
 
-        <div id="quiz-header" class="quiz-title hide"></div>
+        <!-- ========================= -->
+        <!-- TAKE A QUIZ PANEL         -->
+        <!-- ========================= -->
+        <div id="quiz-panel" class="question-panel">
 
-        <div id="tab-container" class="hide"></div>
+            <!-- Quiz selector dropdown -->
+            <div id="quiz-selector">
+                <label for="quiz-select">Choose a Quiz:</label>
+                <select id="quiz-select">
+                    <option value="">-- Select a Quiz --</option>
+                    <option value="data/MathQuiz.json">Math Quiz</option>
+                    <option value="data/ScienceQuiz.json">Science Quiz</option>
+                </select>
+                <button id="load-quiz-btn">Load Quiz</button>
+                <p id="quiz-load-error" class="error-text hide">Please select a quiz first.</p>
+            </div>
 
-        <div id="questions-wrapper" class="hide"></div>
+            <!-- Quiz title (populated by JS) -->
+            <div id="quiz-header" class="quiz-title"></div>
 
-        <button id="submit-btn" class="hide">Submit</button>
+            <!-- Per-question tab navigation (populated by JS) -->
+            <div id="tab-container" class="hide"></div>
 
-        <div id="results-container"></div>
+            <!-- Question panels (populated by JS) -->
+            <div id="questions-wrapper"></div>
 
+            <!-- Submit button and validation error -->
+            <button id="submit-btn" class="hide">Submit Quiz</button>
+            <p id="submit-error" class="error-text hide">Please answer all questions before submitting.</p>
+
+            <!-- Results displayed after submission -->
+            <div id="results-container"></div>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- PREVIOUS ATTEMPTS PANEL   -->
+        <!-- ========================= -->
+        <div id="attempts-panel" class="question-panel hide">
+
+            <button id="load-attempts-btn">Load Attempts</button>
+
+            <!-- Empty state message -->
+            <p id="no-attempts-msg" class="hide">No previous attempts found.</p>
+
+            <!-- Attempts table (shown after loading) -->
+            <table id="attempts-table" class="hide">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Quiz</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="attempts-tbody">
+                    <!-- Rows populated by JS -->
+                </tbody>
+            </table>
+
+            <!-- Show details button (shown after table loads) -->
+            <button id="show-details-btn" class="hide">Show Details</button>
+
+            <!-- Attempt detail view (populated by displayResults()) -->
+            <div id="attempt-details-container"></div>
+
+        </div>
+
+    </div><!-- /#main-app -->
+    <script src="quiz.js"></script>
     </body>
 </html>
 
