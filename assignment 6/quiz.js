@@ -3,6 +3,64 @@ let quizAttempts;
 let userName;
 let currentQuiz; // full quiz object (title + questions)
 
+// Storage
+function initStorage() {
+    let stored = localStorage.getItem("quizAttempts");
+    if (stored === null) {
+        quizAttempts = [];
+    } else {
+        quizAttempts = JSON.parse(stored);
+    }
+}
+
+// Score Calculation
+function calcQuizScore(questions, userAnswers) {
+    let score = 0;
+    for (let i = 0; i < questions.length; i++) {
+        if (userAnswers[i] === questions[i].answer) {
+            score++;
+        }
+    }
+    return score;
+}
+
+// Display Results (shared by submit and show details)
+function displayResults(quizAttempt, containerElement) {
+    let html = "<h3>Results: " + quizAttempt.quiz.title + "</h3>";
+    html += "<p>Submitted by: " + quizAttempt.userName + " &mdash; " + quizAttempt.timestamp + "</p>";
+    html += "<table>";
+    html += "<tr><th>Question</th><th>Correct Answer</th><th>Your Answer</th><th>Score</th></tr>";
+
+    for (let i = 0; i < quizAttempt.quiz.questions.length; i++) {
+        let question = quizAttempt.quiz.questions[i];
+        let userAnswerIndex = quizAttempt.userAnswers[i];
+        let correctAnswerIndex = question.correctAnswer;
+        let correctAnswerText = question.choices[correctAnswerIndex];
+        let userAnswerText = question.choices[userAnswerIndex];
+        let pointScore = 0;
+        if (userAnswerIndex === correctAnswerIndex) {
+            pointScore = 1;
+        }
+
+        html += "<tr>";
+        html += "<td>" + question.questionText + "</td>";
+        html += "<td>" + correctAnswerText + "</td>";
+        html += "<td>" + userAnswerText + "</td>";
+        html += "<td>" + pointScore + "</td>";
+        html += "</tr>";
+    }
+
+    html += "<tr>";
+    html += "<td colspan='3'><strong>Total Score</strong></td>";
+    html += "<td><strong>" + quizAttempt.score + " / " + quizAttempt.numQuestions + "</strong></td>";
+    html += "</tr>";
+    html += "</table>";
+
+    containerElement.innerHTML = html;
+}
+
+
+
 window.onload = function () {
     const questionsWrapper = document.querySelector('#questions-wrapper');
     const tabContainer = document.querySelector('#tab-container');
