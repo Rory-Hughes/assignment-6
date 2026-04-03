@@ -113,6 +113,21 @@ window.onload = function () {
 
     });
     
+    // app-level tab switching
+    tabQuizBtn.addEventListener('click', function() {
+        quizPanel.classList.remove('hide');
+        attemptsPanel.classList.add('hide');
+        tabQuizBtn.classList.add('active');
+        tabAttemptsBtn.classList.remove('active');
+    });
+
+    tabAttemptsBtn.addEventListener('click', function() {
+        attemptsPanel.classList.remove('hide');
+        quizPanel.classList.add('hide');
+        tabAttemptsBtn.classList.add('active');
+        tabQuizBtn.classList.remove('active');
+    });
+
     
 
     
