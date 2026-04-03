@@ -251,7 +251,66 @@ window.onload = function () {
         displayResults(quizAttempt, resultsContainer);
     });
 
-    
+    // Load attempts
+    loadAttemptsBtn.addEventListener("click", function() {
+        initStorage(); // re-read from localStorage in case new attempts were added
+        attemptDetailsContainer.innerHTML = "";
+        showDetailsBtn.classList.add('hide');
+
+        if (quizAttempts.length === 0) {
+            noAttemptsMsg.classList.remove('hide');
+            attemptsTable.classList.add('hide');
+            return;
+        }
+
+        noAttemptsMsg.classList.add('hide');
+
+        // Build table rows
+        let rowsHtml = "";
+        for (let i = 0; i < quizAttempts.length; i++) {
+            rowsHtml += '<tr data-index="' + i + '">';
+            rowsHtml += '<td>' + quizAttempts[i].userName + '</td>';
+            rowsHtml += '<td>' + quizAttempts[i].quiz.title + '</td>';
+            rowsHtml += '<td>' + quizAttempts[i].timestamp + '</td>';
+            rowsHtml += '</tr>';
+        }
+        attemptsTbody.innerHTML = rowsHtml;
+        attemptsTable.classList.remove('hide');
+        showDetailsBtn.classList.remove('hide');
+
+        // Assign row click handlers for selection
+        let rows = attemptsTbody.querySelectorAll('tr');
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].addEventListener("click", function() {
+                // Remove selected from all rows
+                for (let k = 0; k < rows.length; k++) {
+                    rows[k].classList.remove('selected');
+                }
+                // Select the clicked row
+                rows[i].classList.add('selected');
+            });
+        }
+    });
+
+    // Show details
+    showDetailsBtn.addEventListener("click", function() {
+        let rows = attemptsTbody.querySelectorAll('tr');
+        let selectedIndex = -1;
+
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].classList.contains('selected')) {
+                selectedIndex = Number(rows[i].getAttribute('data-index'));
+                break;
+            }
+        }
+
+        if (selectedIndex === -1) {
+            attemptDetailsContainer.innerHTML = '<p class="error-text">Please select an attempt from the table first.</p>';
+            return;
+        }
+
+        displayResults(quizAttempts[selectedIndex], attemptDetailsContainer);
+    });
 
     
 };
