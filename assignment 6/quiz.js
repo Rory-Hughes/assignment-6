@@ -96,7 +96,16 @@ window.onload = function () {
     const attemptDetailsContainer = document.querySelector('#attempt-details-container');
 
     
-    const url = "data/MathQuiz.json";
+    // const url = "data/MathQuiz.json";
+
+    
+};
+
+
+
+
+
+/*
 
     const xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -227,3 +236,4 @@ function processResults() {
         resultsContainer.innerHTML = resultsHtml;
     }
 }
+    */
