@@ -212,6 +212,45 @@ window.onload = function () {
         xhr.send();
     });
     
+    // Submit Quiz
+    submitBtn.addEventListener("click", function() {
+        let userAnswers = [];
+        let allAnswered = true;
+
+        for (let i = 0; i < currentQuiz.questions.length; i++) {
+            let selected = document.querySelector('input[name="question-' + i + '"]:checked');
+            if (selected === null) {
+                allAnswered = false;
+                userAnswers[i] = null;
+            } else {
+                userAnswers[i] = Number(selected.value);
+            }
+        }
+
+        if (!allAnswered) {
+            submitError.classList.remove('hide');
+            return;
+        }
+        submitError.classList.add('hide');
+
+        // Build attempt object
+        let quizAttempt = {
+            userName: userName,
+            quiz: currentQuiz,
+            timestamp: new Date().toUTCString(),
+            userAnswers: userAnswers,
+            score: calcQuizScore(currentQuiz.questions, userAnswers),
+            numQuestions: currentQuiz.questions.length
+        };
+
+        // Save to localStorage
+        quizAttempts.push(quizAttempt);
+        localStorage.setItem("quizAttempts", JSON.stringify(quizAttempts));
+
+        // Display results
+        displayResults(quizAttempt, resultsContainer);
+    });
+
     
 
     
