@@ -98,6 +98,23 @@ window.onload = function () {
     
     // const url = "data/MathQuiz.json";
 
+    // Login    
+    loginBtn.addEventListener('click', function() {
+        let name = usernameInput.value.trim();
+        if (name === "") {
+            loginError.classList.remove('hide');
+            return;
+        }
+        loginError.classList.add('hide');
+        userName = name;
+        loggedInUser.innerHTML = "Logged in as: " + userName;
+        loginSection.classList.add('hide');
+        mainApp.classList.remove('hide');
+
+    });
+    
+    
+
     
 };
 
