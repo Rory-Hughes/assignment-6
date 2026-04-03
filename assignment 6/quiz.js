@@ -128,6 +128,90 @@ window.onload = function () {
         tabQuizBtn.classList.remove('active');
     });
 
+    // Load Quiz
+    loadQuizBtn.addEventListener('click', function() {
+        let selectedUrl = quizSelect.value;
+        if (selectedUrl === "") {
+            quizLoadError.classList.remove('hide');
+            return;
+        }
+        quizLoadError.classList.add('hide');
+
+        // Reset quiz area before loading new quiz
+        quizHeader.innerHTML = "";
+        tabContainer.innerHTML = "";
+        tabContainer.classList.add('hide');
+        questionsWrapper.innerHTML = "";
+        submitBtn.classList.add('hide');
+        submitError.classList.add('hide');
+        resultsContainer.innerHTML = "";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", selectedUrl, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let obj = JSON.parse(xhr.responseText);
+                currentQuiz = obj;
+                quizHeader.innerHTML = obj.title;
+
+                let tabsHtml = "";
+                let questionsHtml = "";
+
+                for (let i = 0; i < obj.questions.length; i++) {
+                    // Per-question tab buttons
+                    let activeClass = "";
+                    if (i === 0) {
+                        activeClass = " active";
+                    }
+                    tabsHtml += '<button class="tab-button' + activeClass + '" data-index="' + i + '">Q' + (i + 1) + '</button>';
+
+                    // Per-question panels
+                    let hideClass = "";
+                     if (i !== 0) {
+                        hideClass = " hide";
+                    }
+                    questionsHtml += '<div class="question-panel' + hideClass + '" id="question-panel-' + i + '">';
+                    questionsHtml += '<p class="question-text">' + obj.questions[i].questionText + '</p>';
+
+                    for (let j = 0; j < obj.questions[i].choices.length; j++) {
+                        questionsHtml += '<div class="choice-item">';
+                        questionsHtml += '<label>';
+                        questionsHtml += '<input type="radio" name="question-' + i + '" value="' + j + '"> ';
+                        questionsHtml += obj.questions[i].choices[j];
+                        questionsHtml += '</label>';
+                        questionsHtml += '</div>';
+                    }
+                    questionsHtml += '</div>';
+                }
+                tabContainer.innerHTML = tabsHtml;
+                questionsWrapper.innerHTML = questionsHtml;
+                tabContainer.classList.remove('hide');
+                submitBtn.classList.remove('hide');
+
+                // Assign per-question tab click handlers
+                // (assigned here because tabs don't exist until quiz loads)
+                let questionTabs = tabContainer.querySelectorAll('.tab-button');
+                for (let i = 0; i < questionTabs.length; i++) {
+                    questionTabs[i].addEventListener("click", function() {
+                        // Deactivate all question tabs
+                        for (let k = 0; k < questionTabs.length; k++) {
+                            questionTabs[k].classList.remove('active');
+                        }
+                        // Hide all question panels
+                        let allPanels = questionsWrapper.querySelectorAll('.question-panel');
+                        for (let k = 0; k < allPanels.length; k++) {
+                            allPanels[k].classList.add('hide');
+                        }
+                        // Activate the clicked tab and its panel
+                        questionTabs[i].classList.add('active');
+                        document.querySelector('#question-panel-' + i).classList.remove('hide');
+                    });
+                }
+            }
+        };
+        xhr.send();
+    });
+    
     
 
     
