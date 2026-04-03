@@ -34,7 +34,7 @@ function displayResults(quizAttempt, containerElement) {
     for (let i = 0; i < quizAttempt.quiz.questions.length; i++) {
         let question = quizAttempt.quiz.questions[i];
         let userAnswerIndex = quizAttempt.userAnswers[i];
-        let correctAnswerIndex = question.correctAnswer;
+        let correctAnswerIndex = question.answer;
         let correctAnswerText = question.choices[correctAnswerIndex];
         let userAnswerText = question.choices[userAnswerIndex];
         let pointScore = 0;

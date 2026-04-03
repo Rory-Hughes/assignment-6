@@ -1,67 +1,367 @@
-body { 
-    font-family: sans-serif; 
-    padding: 20px; 
+/* ============================================================
+   BASE & RESET
+   ============================================================ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-.question-container { 
-    margin-bottom: 20px; 
-    border: 1px solid #ccc; 
-    padding: 15px; 
+body {
+    font-family: sans-serif;
+    font-size: 16px;
+    background-color: #f0f2f5;
+    color: #333;
 }
 
-.quiz-title { 
-    font-size: 24px; 
-    font-weight: bold; 
-    margin-bottom: 20px; 
+/* ============================================================
+   TITLE BAR
+   ============================================================ */
+#title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #00008b;
+    color: white;
+    padding: 14px 24px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.question-text { 
-    font-weight: bold; 
-    margin-bottom: 10px; 
+#logged-in-user {
+    font-size: 14px;
+    font-weight: normal;
+    opacity: 0.85;
 }
 
-.choice-item { 
-    margin-bottom: 5px; 
+/* ============================================================
+   LOGIN SECTION
+   ============================================================ */
+#login-section {
+    max-width: 400px;
+    margin: 80px auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 36px;
+    text-align: center;
+}
+
+#login-section h2 {
+    font-size: 20px;
+    margin-bottom: 24px;
+    color: #00008b;
+}
+
+#login-section label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+#username-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+    margin-bottom: 14px;
+}
+
+#username-input:focus {
+    outline: none;
+    border-color: #00008b;
+}
+
+/* ============================================================
+   MAIN APP CONTAINER
+   ============================================================ */
+#main-app {
+    max-width: 860px;
+    margin: 30px auto;
+    padding: 0 20px 40px;
+}
+
+/* ============================================================
+   APP-LEVEL TAB MENU
+   ============================================================ */
+#app-tab-container {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 2px solid #00008b;
+}
+
+#app-tab-container .tab-button {
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    background: #e8e8f0;
+    color: #555;
+    border-radius: 4px 4px 0 0;
+    margin-right: 4px;
+}
+
+#app-tab-container .tab-button.active {
+    background: #00008b;
+    color: white;
+    border-color: #00008b;
+}
+
+/* ============================================================
+   PANELS (quiz panel & attempts panel)
+   ============================================================ */
+#quiz-panel,
+#attempts-panel {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    padding: 28px;
+}
+
+/* ============================================================
+   QUIZ SELECTOR
+   ============================================================ */
+#quiz-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#quiz-selector label {
+    font-weight: bold;
+}
+
+#quiz-select {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+#quiz-select:focus {
+    outline: none;
+    border-color: #00008b;
+}
+
+/* ============================================================
+   QUIZ TITLE & QUESTION TABS
+   ============================================================ */
+.quiz-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 18px;
+    color: #00008b;
 }
 
 #tab-container {
     display: flex;
     gap: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
 }
 
+/* ============================================================
+   PER-QUESTION TAB BUTTONS & PANELS
+   ============================================================ */
 .tab-button {
-    padding: 10px;
+    padding: 8px 14px;
     cursor: pointer;
     border: 1px solid #ccc;
     background: #f9f9f9;
+    border-radius: 4px 4px 0 0;
+    font-size: 14px;
+    color: #333;
 }
 
 .tab-button.active {
     background: #00008b;
     color: white;
+    border-color: #00008b;
 }
 
 .question-panel {
     border: 1px solid #ccc;
+    border-top: none;
     padding: 20px;
+    border-radius: 0 4px 4px 4px;
+    margin-bottom: 20px;
 }
 
-
-
-#results-container {
-    margin-top: 20px;
+.question-text {
+    font-weight: bold;
+    margin-bottom: 14px;
+    font-size: 16px;
+    line-height: 1.5;
 }
 
-.error-text { color: red; font-weight: bold; } 
+.choice-item {
+    margin-bottom: 10px;
+}
 
-.hide
-{
+.choice-item label {
+    cursor: pointer;
+}
+
+.choice-item input[type="radio"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+/* ============================================================
+   BUTTONS (general)
+   ============================================================ */
+button {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid #00008b;
+    border-radius: 4px;
+    background-color: #00008b;
+    color: white;
+}
+
+button:hover {
+    background-color: #000070;
+    border-color: #000070;
+}
+
+/* ============================================================
+   RESULTS CONTAINER
+   ============================================================ */
+#results-container,
+#attempt-details-container {
+    margin-top: 24px;
+}
+
+#results-container h3,
+#attempt-details-container h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #00008b;
+}
+
+#results-container p,
+#attempt-details-container p {
+    margin-bottom: 12px;
+    color: #555;
+    font-size: 14px;
+}
+
+#results-container table,
+#attempt-details-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+#results-container th,
+#attempt-details-container th {
+    background-color: #00008b;
+    color: white;
+    padding: 10px 12px;
+    text-align: left;
+}
+
+#results-container td,
+#attempt-details-container td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#results-container tr:nth-child(even) td,
+#attempt-details-container tr:nth-child(even) td {
+    background-color: #f7f7fb;
+}
+
+/* ============================================================
+   PREVIOUS ATTEMPTS TABLE
+   ============================================================ */
+#attempts-panel {
+    padding-top: 24px;
+}
+
+#load-attempts-btn {
+    margin-bottom: 20px;
+}
+
+#attempts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+    font-size: 14px;
+}
+
+#attempts-table th {
+    background-color: #00008b;
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+}
+
+#attempts-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#attempts-table tbody tr {
+    cursor: pointer;
+}
+
+#attempts-table tbody tr:hover {
+    background-color: #eeeef8;
+}
+
+#attempts-table tbody tr:nth-child(even) {
+    background-color: #f7f7fb;
+}
+
+#attempts-table tbody tr:nth-child(even):hover {
+    background-color: #eeeef8;
+}
+
+tr.selected,
+tr.selected:nth-child(even) {
+    background-color: #ccd0f0 !important;
+}
+
+#show-details-btn {
+    margin-top: 16px;
+}
+
+/* ============================================================
+   SUBMIT BUTTON
+   ============================================================ */
+#submit-btn {
+    margin-top: 10px;
+}
+
+/* ============================================================
+   ERROR & UTILITY
+   ============================================================ */
+.error-text {
+    color: red;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+.hide {
     display: none;
 }
 
-.show
-{
+.show {
     display: block;
 }
-
