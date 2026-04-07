@@ -27,7 +27,7 @@ function calcQuizScore(questions, userAnswers) {
 // Display Results (shared by submit and show details)
 function displayResults(quizAttempt, containerElement) {
     let html = "<h3>Results: " + quizAttempt.quiz.title + "</h3>";
-    html += "<p>Submitted by: " + quizAttempt.userName + " &mdash; " + quizAttempt.timestamp + "</p>";
+    html += "<p>Submitted by: " + quizAttempt.userName + "<br>On: " + quizAttempt.timestamp + "</p>";
     html += "<table>";
     html += "<tr><th>Question</th><th>Correct Answer</th><th>Your Answer</th><th>Score</th></tr>";
 
@@ -57,6 +57,10 @@ function displayResults(quizAttempt, containerElement) {
     html += "</table>";
 
     containerElement.innerHTML = html;
+}
+
+function loadQuizes() {
+    
 }
 
 
@@ -96,7 +100,6 @@ window.onload = function () {
     const attemptDetailsContainer = document.querySelector('#attempt-details-container');
 
     
-    // const url = "data/MathQuiz.json";
 
     // Login    
     loginBtn.addEventListener('click', function() {

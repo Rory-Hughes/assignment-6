@@ -50,19 +50,21 @@
                 <select id="quiz-select">
                     <option value="">-- Select a Quiz --</option>
                     <option value="data/MathQuiz.json">Math Quiz</option>
-                    <option value="data/ScienceQuiz.json">Science Quiz</option>
+                    <option value="data/CanadianaQuiz.json">Canadiana Quiz</option>
+                    <option value="data/TopologyQuiz.json">Topology Quiz</option>
+                    <option value="data/WorldGeographyQuiz.json">World Geography Quiz</option>
                 </select>
                 <button id="load-quiz-btn">Load Quiz</button>
                 <p id="quiz-load-error" class="error-text hide">Please select a quiz first.</p>
             </div>
 
-            <!-- Quiz title (populated by JS) -->
+            <!-- Quiz title -->
             <div id="quiz-header" class="quiz-title"></div>
 
-            <!-- Per-question tab navigation (populated by JS) -->
+            <!-- Per-question tab navigation -->
             <div id="tab-container" class="hide"></div>
 
-            <!-- Question panels (populated by JS) -->
+            <!-- Question panels -->
             <div id="questions-wrapper"></div>
 
             <!-- Submit button and validation error -->
