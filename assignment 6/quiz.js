@@ -2,6 +2,7 @@
 let quizAttempts;
 let userName;
 let currentQuiz; // full quiz object (title + questions)
+let allQuizes;
 
 // Storage
 function initStorage() {
@@ -59,8 +60,25 @@ function displayResults(quizAttempt, containerElement) {
     containerElement.innerHTML = html;
 }
 
-function loadQuizes() {
-    
+function loadQuizList(quizSelect, quizLoadError) {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "data/Quizes.json", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            allQuizes = JSON.parse(xhr.responseText);
+            console.log(allQuizes);
+            let quizOptionsHTML = `<option value="">-- Select a Quiz --</option>`;
+            
+            for (i = 0; i > allQuizes.length; i++){
+                quizOptionsHTML += `<option value="` + i + `">` + allQuizes[i].title + `</option>`;
+            }
+            quizSelect.innerHTML = quizOptionsHTML;
+        } else if (xhr.readyState === 4) {
+            quizLoadError.innerHTML = "Could not load quiz list. Check that data/quizzes.json exists";
+            quizLoadError.classList.remove('hide');
+        }
+    };
+    xhr.send();
 }
 
 
@@ -68,6 +86,8 @@ function loadQuizes() {
 window.onload = function () {
     
     initStorage();
+
+    
 
     // --- DOM references ---
     const loginSection = document.querySelector('#login-section');
@@ -99,7 +119,9 @@ window.onload = function () {
     const showDetailsBtn = document.querySelector('#show-details-btn');
     const attemptDetailsContainer = document.querySelector('#attempt-details-container');
 
-    
+    loadQuizList(quizSelect, quizLoadError);
+
+
 
     // Login    
     loginBtn.addEventListener('click', function() {
@@ -113,7 +135,6 @@ window.onload = function () {
         loggedInUser.innerHTML = "Logged in as: " + userName;
         loginSection.classList.add('hide');
         mainApp.classList.remove('hide');
-
     });
     
     // app-level tab switching
@@ -133,12 +154,14 @@ window.onload = function () {
 
     // Load Quiz
     loadQuizBtn.addEventListener('click', function() {
-        let selectedUrl = quizSelect.value;
-        if (selectedUrl === "") {
+        let selectedValue = quizSelect.value;
+        if (selectedUrl == "") {
             quizLoadError.classList.remove('hide');
             return;
         }
         quizLoadError.classList.add('hide');
+        let selectedIndex = Number(selectedValue);
+        currentQuiz = allQuizes[selectedIndex];
 
         // Reset quiz area before loading new quiz
         quizHeader.innerHTML = "";
@@ -149,70 +172,62 @@ window.onload = function () {
         submitError.classList.add('hide');
         resultsContainer.innerHTML = "";
 
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", selectedUrl, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                let obj = JSON.parse(xhr.responseText);
-                currentQuiz = obj;
-                quizHeader.innerHTML = obj.title;
+        
+        quizHeader.innerHTML = currentQuiz.title;
 
-                let tabsHtml = "";
-                let questionsHtml = "";
+        let tabsHtml = "";
+        let questionsHtml = "";
 
-                for (let i = 0; i < obj.questions.length; i++) {
-                    // Per-question tab buttons
-                    let activeClass = "";
-                    if (i === 0) {
-                        activeClass = " active";
-                    }
-                    tabsHtml += '<button class="tab-button' + activeClass + '" data-index="' + i + '">Q' + (i + 1) + '</button>';
-
-                    // Per-question panels
-                    let hideClass = "";
-                     if (i !== 0) {
-                        hideClass = " hide";
-                    }
-                    questionsHtml += '<div class="question-panel' + hideClass + '" id="question-panel-' + i + '">';
-                    questionsHtml += '<p class="question-text">' + obj.questions[i].questionText + '</p>';
-
-                    for (let j = 0; j < obj.questions[i].choices.length; j++) {
-                        questionsHtml += '<div class="choice-item">';
-                        questionsHtml += '<label>';
-                        questionsHtml += '<input type="radio" name="question-' + i + '" value="' + j + '"> ';
-                        questionsHtml += obj.questions[i].choices[j];
-                        questionsHtml += '</label>';
-                        questionsHtml += '</div>';
-                    }
-                    questionsHtml += '</div>';
-                }
-                tabContainer.innerHTML = tabsHtml;
-                questionsWrapper.innerHTML = questionsHtml;
-                tabContainer.classList.remove('hide');
-                submitBtn.classList.remove('hide');
-
-                // Assign per-question tab click handlers
-                // (assigned here because tabs don't exist until quiz loads)
-                let questionTabs = tabContainer.querySelectorAll('.tab-button');
-                for (let i = 0; i < questionTabs.length; i++) {
-                    questionTabs[i].addEventListener("click", function() {
-                        // Deactivate all question tabs
-                        for (let k = 0; k < questionTabs.length; k++) {
-                            questionTabs[k].classList.remove('active');
-                        }
-                        // Hide all question panels
-                        let allPanels = questionsWrapper.querySelectorAll('.question-panel');
-                        for (let k = 0; k < allPanels.length; k++) {
-                            allPanels[k].classList.add('hide');
-                        }
-                        // Activate the clicked tab and its panel
-                        questionTabs[i].classList.add('active');
-                        document.querySelector('#question-panel-' + i).classList.remove('hide');
-                    });
-                }
+        for (let i = 0; i < currentQuiz.questions.length; i++) {
+            // Per-question tab buttons
+            let activeClass = "";
+            if (i === 0) {
+                activeClass = " active";
             }
-        };
-        xhr.send();
+            tabsHtml += '<button class="tab-button' + activeClass + '" data-index="' + i + '">Q' + (i + 1) + '</button>';
+
+            // Per-question panels
+            let hideClass = "";
+                if (i !== 0) {
+                hideClass = " hide";
+            }
+            questionsHtml += '<div class="question-panel' + hideClass + '" id="question-panel-' + i + '">';
+            questionsHtml += '<p class="question-text">' + currentQuiz.questions[i].questionText + '</p>';
+
+            for (let j = 0; j < currentQuiz.questions[i].choices.length; j++) {
+                questionsHtml += '<div class="choice-item">';
+                questionsHtml += '<label>';
+                questionsHtml += '<input type="radio" name="question-' + i + '" value="' + j + '"> ';
+                questionsHtml += currentQuiz.questions[i].choices[j];
+                questionsHtml += '</label>';
+                questionsHtml += '</div>';
+            }
+            questionsHtml += '</div>';
+        }
+        tabContainer.innerHTML = tabsHtml;
+        questionsWrapper.innerHTML = questionsHtml;
+        tabContainer.classList.remove('hide');
+        submitBtn.classList.remove('hide');
+
+        // Assign per-question tab click handlers
+        // (assigned here because tabs don't exist until quiz loads)
+        let questionTabs = tabContainer.querySelectorAll('.tab-button');
+        for (let i = 0; i < questionTabs.length; i++) {
+            questionTabs[i].addEventListener("click", function() {
+                // Deactivate all question tabs
+                for (let k = 0; k < questionTabs.length; k++) {
+                    questionTabs[k].classList.remove('active');
+                }
+                // Hide all question panels
+                let allPanels = questionsWrapper.querySelectorAll('.question-panel');
+                for (let k = 0; k < allPanels.length; k++) {
+                    allPanels[k].classList.add('hide');
+                }
+                // Activate the clicked tab and its panel
+                questionTabs[i].classList.add('active');
+                document.querySelector('#question-panel-' + i).classList.remove('hide');
+            });
+        }
     });
     
     // Submit Quiz
