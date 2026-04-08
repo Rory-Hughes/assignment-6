@@ -67,10 +67,11 @@ function loadQuizList(quizSelect, quizLoadError) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             allQuizes = JSON.parse(xhr.responseText);
             console.log(allQuizes);
+
             let quizOptionsHTML = `<option value="">-- Select a Quiz --</option>`;
             
-            for (i = 0; i > allQuizes.length; i++){
-                quizOptionsHTML += `<option value="` + i + `">` + allQuizes[i].title + `</option>`;
+            for (i = 0; i < allQuizes.quizes.length; i++){
+                quizOptionsHTML += `<option value="` + i + `">` + allQuizes.quizes[i].title + `</option>`;
             }
             quizSelect.innerHTML = quizOptionsHTML;
         } else if (xhr.readyState === 4) {
@@ -155,13 +156,13 @@ window.onload = function () {
     // Load Quiz
     loadQuizBtn.addEventListener('click', function() {
         let selectedValue = quizSelect.value;
-        if (selectedUrl == "") {
+        if (selectedValue == "") {
             quizLoadError.classList.remove('hide');
             return;
         }
         quizLoadError.classList.add('hide');
         let selectedIndex = Number(selectedValue);
-        currentQuiz = allQuizes[selectedIndex];
+        currentQuiz = allQuizes.quizes[selectedIndex];
 
         // Reset quiz area before loading new quiz
         quizHeader.innerHTML = "";
