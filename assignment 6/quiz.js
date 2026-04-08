@@ -2,7 +2,7 @@
 let quizAttempts;
 let userName;
 let currentQuiz; // full quiz object (title + questions)
-let allQuizes;
+let allQuizzes;
 
 // Storage
 function initStorage() {
@@ -62,16 +62,17 @@ function displayResults(quizAttempt, containerElement) {
 
 function loadQuizList(quizSelect, quizLoadError) {
     let xhr = new XMLHttpRequest();
-    xhr.open("GET", "data/Quizes.json", true);
+    xhr.open("GET", "data/Quizzes.json", true);
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            allQuizes = JSON.parse(xhr.responseText);
-            console.log(allQuizes);
+            obj = JSON.parse(xhr.responseText);
+            allQuizzes = obj.quizzes;
+            console.log(allQuizzes);
 
             let quizOptionsHTML = `<option value="">-- Select a Quiz --</option>`;
             
-            for (i = 0; i < allQuizes.quizes.length; i++){
-                quizOptionsHTML += `<option value="` + i + `">` + allQuizes.quizes[i].title + `</option>`;
+            for (i = 0; i < allQuizzes.length; i++){
+                quizOptionsHTML += `<option value="` + i + `">` + allQuizzes[i].title + `</option>`;
             }
             quizSelect.innerHTML = quizOptionsHTML;
         } else if (xhr.readyState === 4) {
@@ -162,7 +163,7 @@ window.onload = function () {
         }
         quizLoadError.classList.add('hide');
         let selectedIndex = Number(selectedValue);
-        currentQuiz = allQuizes.quizes[selectedIndex];
+        currentQuiz = allQuizzes[selectedIndex];
 
         // Reset quiz area before loading new quiz
         quizHeader.innerHTML = "";
