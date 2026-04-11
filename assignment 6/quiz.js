@@ -117,9 +117,7 @@ function renderAttemptsTable(originalIndices, attemptsTable, attemptsTbody, noAt
 
 // Computes and displays summary statistics for a given set of attempt indices.
 function renderStats(originalIndices) {
-    let attemptsStats = document.querySelector('#attempts-stats');
-    let statsContent = document.querySelector('#stats-content');
-
+    
     if (originalIndices.length === 0) {
         attemptsStats.classList.add('hide');
         return;
@@ -227,6 +225,9 @@ window.onload = function () {
     const filterBtn = document.querySelector('#filter-btn');
     const clearFilterBtn = document.querySelector('#clear-filter-btn');
     const usernameFilter = document.querySelector('#username-filter');
+    const attemptsStats = document.querySelector('#attempts-stats');
+    const statsContent = document.querySelector('#stats-content');
+
 
 
     // load quiz selection after defining DOM refrences to populate drop down
