@@ -60,6 +60,7 @@ function displayResults(quizAttempt, containerElement) {
     containerElement.innerHTML = html;
 }
 
+/*
 // parse json file and populate quiz selection drop down
 function loadQuizList(quizSelect, quizLoadError) {
     let xhr = new XMLHttpRequest();
@@ -82,7 +83,7 @@ function loadQuizList(quizSelect, quizLoadError) {
         }
     };
     xhr.send();
-}
+}*/
 
 // Renders a filtered subset of quizAttempts to the attempts table.
 // originalIndices: array of index positions from the global quizAttempts array.
@@ -111,16 +112,6 @@ function renderAttemptsTable(originalIndices, attemptsTable, attemptsTbody, noAt
     attemptsTable.classList.remove('hide');
     showDetailsBtn.classList.remove('hide');
 
-    // Re-attach row click handlers after rebuilding the table
-    let rows = attemptsTbody.querySelectorAll('tr');
-    for (let i = 0; i < rows.length; i++) {
-        rows[i].addEventListener("click", function() {
-            for (let k = 0; k < rows.length; k++) {
-                rows[k].classList.remove('selected');
-            }
-            rows[i].classList.add('selected');
-        });
-    }
     renderStats(originalIndices);
 }
 
@@ -238,8 +229,26 @@ window.onload = function () {
     const usernameFilter = document.querySelector('#username-filter');
 
 
-    // call function to load quiz selection after defining DOM refrences
-    loadQuizList(quizSelect, quizLoadError);
+    // load quiz selection after defining DOM refrences to populate drop down
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "data/Quizzes.json", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            let obj = JSON.parse(xhr.responseText);
+            allQuizzes = obj.quizzes;
+
+            let quizOptionsHTML = '<option value="">-- Select a Quiz --</option>';
+            for (let i = 0; i < allQuizzes.length; i++) {
+                quizOptionsHTML += '<option value="' + i + '">' + allQuizzes[i].title + '</option>';
+            }
+            quizSelect.innerHTML = quizOptionsHTML;
+        } else if (xhr.readyState === 4) {
+            quizLoadError.innerHTML = "Could not load quiz list. Check that data/Quizzes.json exists";
+            quizLoadError.classList.remove('hide');
+        }
+    };
+    xhr.send();
+
 
 
 
@@ -436,6 +445,20 @@ window.onload = function () {
         }
         renderAttemptsTable(allIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer);
     });
+
+    // Delegated click handler for attempts table rows
+    attemptsTbody.addEventListener("click", function(e) {
+        if (e.target.tagName === 'TD') {
+            let clickedRow = e.target.parentElement;
+
+            let rows = attemptsTbody.querySelectorAll('tr');
+            for (let k = 0; k < rows.length; k++) {
+                rows[k].classList.remove('selected');
+            }
+            clickedRow.classList.add('selected');
+        }
+    });
+
 
 
     // Show details
