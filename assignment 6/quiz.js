@@ -60,34 +60,9 @@ function displayResults(quizAttempt, containerElement) {
     containerElement.innerHTML = html;
 }
 
-/*
-// parse json file and populate quiz selection drop down
-function loadQuizList(quizSelect, quizLoadError) {
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", "data/Quizzes.json", true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            obj = JSON.parse(xhr.responseText);
-            allQuizzes = obj.quizzes;
-            //console.log(allQuizzes);
-
-            let quizOptionsHTML = `<option value="">-- Select a Quiz --</option>`;
-            
-            for (i = 0; i < allQuizzes.length; i++){
-                quizOptionsHTML += `<option value="` + i + `">` + allQuizzes[i].title + `</option>`;
-            }
-            quizSelect.innerHTML = quizOptionsHTML;
-        } else if (xhr.readyState === 4) {
-            quizLoadError.innerHTML = "Could not load quiz list. Check that data/quizzes.json exists";
-            quizLoadError.classList.remove('hide');
-        }
-    };
-    xhr.send();
-}*/
-
 // Renders a filtered subset of quizAttempts to the attempts table.
 // originalIndices: array of index positions from the global quizAttempts array.
-function renderAttemptsTable(originalIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer) {
+function renderAttemptsTable(originalIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer, attemptsStats, statsContent) {
     attemptDetailsContainer.innerHTML = "";
     showDetailsBtn.classList.add('hide');
 
@@ -112,11 +87,11 @@ function renderAttemptsTable(originalIndices, attemptsTable, attemptsTbody, noAt
     attemptsTable.classList.remove('hide');
     showDetailsBtn.classList.remove('hide');
 
-    renderStats(originalIndices);
+    renderStats(originalIndices, attemptsStats, statsContent);
 }
 
 // Computes and displays summary statistics for a given set of attempt indices.
-function renderStats(originalIndices) {
+function renderStats(originalIndices, attemptsStats, statsContent) {
     
     if (originalIndices.length === 0) {
         attemptsStats.classList.add('hide');
@@ -420,7 +395,7 @@ window.onload = function () {
         for (let i = 0; i < quizAttempts.length; i++) {
             allIndices.push(i);
         }
-        renderAttemptsTable(allIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer);
+        renderAttemptsTable(allIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer, attemptsStats, statsContent);
         usernameFilter.classList.remove('hide'); // show the filter UI
     });
 
@@ -434,7 +409,7 @@ window.onload = function () {
                 filteredIndices.push(i);
             }
         }
-        renderAttemptsTable(filteredIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer);
+        renderAttemptsTable(filteredIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer, attemptsStats, statsContent);
     });
 
     // Clear filter and show all attempts
@@ -444,7 +419,7 @@ window.onload = function () {
         for (let i = 0; i < quizAttempts.length; i++) {
             allIndices.push(i);
         }
-        renderAttemptsTable(allIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer);
+        renderAttemptsTable(allIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer, attemptsStats, statsContent);
     });
 
     // Delegated click handler for attempts table rows
