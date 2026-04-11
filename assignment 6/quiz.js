@@ -84,6 +84,119 @@ function loadQuizList(quizSelect, quizLoadError) {
     xhr.send();
 }
 
+// Renders a filtered subset of quizAttempts to the attempts table.
+// originalIndices: array of index positions from the global quizAttempts array.
+function renderAttemptsTable(originalIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer) {
+    attemptDetailsContainer.innerHTML = "";
+    showDetailsBtn.classList.add('hide');
+
+    if (originalIndices.length === 0) {
+        noAttemptsMsg.classList.remove('hide');
+        attemptsTable.classList.add('hide');
+        return;
+    }
+
+    noAttemptsMsg.classList.add('hide');
+
+    let rowsHtml = "";
+    for (let i = 0; i < originalIndices.length; i++) {
+        let idx = originalIndices[i];
+        rowsHtml += '<tr data-index="' + idx + '">';
+        rowsHtml += '<td>' + quizAttempts[idx].userName + '</td>';
+        rowsHtml += '<td>' + quizAttempts[idx].quiz.title + '</td>';
+        rowsHtml += '<td>' + quizAttempts[idx].timestamp + '</td>';
+        rowsHtml += '</tr>';
+    }
+    attemptsTbody.innerHTML = rowsHtml;
+    attemptsTable.classList.remove('hide');
+    showDetailsBtn.classList.remove('hide');
+
+    // Re-attach row click handlers after rebuilding the table
+    let rows = attemptsTbody.querySelectorAll('tr');
+    for (let i = 0; i < rows.length; i++) {
+        rows[i].addEventListener("click", function() {
+            for (let k = 0; k < rows.length; k++) {
+                rows[k].classList.remove('selected');
+            }
+            rows[i].classList.add('selected');
+        });
+    }
+    renderStats(originalIndices);
+}
+
+// Computes and displays summary statistics for a given set of attempt indices.
+function renderStats(originalIndices) {
+    let attemptsStats = document.querySelector('#attempts-stats');
+    let statsContent = document.querySelector('#stats-content');
+
+    if (originalIndices.length === 0) {
+        attemptsStats.classList.add('hide');
+        return;
+    }
+
+    let totalScore = 0;
+    let highestScore = -1;
+    let lowestScore = Infinity;
+    let highestAttempt = null;
+    let lowestAttempt = null;
+
+    for (let i = 0; i < originalIndices.length; i++) {
+        let attempt = quizAttempts[originalIndices[i]];
+        let percentage = attempt.score / attempt.numQuestions;
+
+        totalScore += percentage;
+
+        if (percentage > highestScore) {
+            highestScore = percentage;
+            highestAttempt = attempt;
+        }
+        if (percentage < lowestScore) {
+            lowestScore = percentage;
+            lowestAttempt = attempt;
+        }
+    }
+
+    let averagePercent = Math.round((totalScore / originalIndices.length) * 100);
+    let highestPercent = Math.round(highestScore * 100);
+    let lowestPercent = Math.round(lowestScore * 100);
+
+    // Table 1: Highest and Lowest
+    let html = '<table>';
+    html += '<tr><th>Stat</th><th>Score</th><th>User</th><th>Quiz</th></tr>';
+
+    html += '<tr>';
+    html += '<td><strong>Highest</strong></td>';
+    html += '<td>' + highestAttempt.score + ' / ' + highestAttempt.numQuestions + ' (' + highestPercent + '%)</td>';
+    html += '<td>' + highestAttempt.userName + '</td>';
+    html += '<td>' + highestAttempt.quiz.title + '</td>';
+    html += '</tr>';
+
+    html += '<tr>';
+    html += '<td><strong>Lowest</strong></td>';
+    html += '<td>' + lowestAttempt.score + ' / ' + lowestAttempt.numQuestions + ' (' + lowestPercent + '%)</td>';
+    html += '<td>' + lowestAttempt.userName + '</td>';
+    html += '<td>' + lowestAttempt.quiz.title + '</td>';
+    html += '</tr>';
+
+    html += '</table>';
+
+    // Table 2: Average
+    html += '<table id="stats-average-table">';
+    html += '<tr><th>Stat</th><th>Score</th><th>Across</th></tr>';
+
+    html += '<tr>';
+    html += '<td><strong>Average</strong></td>';
+    html += '<td>' + averagePercent + '%</td>';
+    html += '<td>' + originalIndices.length + ' attempt(s)</td>';
+    html += '</tr>';
+
+    html += '</table>';
+
+    statsContent.innerHTML = html;
+    attemptsStats.classList.remove('hide');
+}
+
+
 
 
 window.onload = function () {
@@ -119,6 +232,11 @@ window.onload = function () {
     const noAttemptsMsg = document.querySelector('#no-attempts-msg');
     const showDetailsBtn = document.querySelector('#show-details-btn');
     const attemptDetailsContainer = document.querySelector('#attempt-details-container');
+    const filterUsernameInput = document.querySelector('#filter-username-input');
+    const filterBtn = document.querySelector('#filter-btn');
+    const clearFilterBtn = document.querySelector('#clear-filter-btn');
+    const usernameFilter = document.querySelector('#username-filter');
+
 
     // call function to load quiz selection after defining DOM refrences
     loadQuizList(quizSelect, quizLoadError);
@@ -275,44 +393,50 @@ window.onload = function () {
 
     // Load attempts
     loadAttemptsBtn.addEventListener("click", function() {
-        initStorage(); // re-read from localStorage in case new attempts were added
-        attemptDetailsContainer.innerHTML = "";
-        showDetailsBtn.classList.add('hide');
+        initStorage();
+        filterUsernameInput.value = ""; // clear any stale filter input
 
         if (quizAttempts.length === 0) {
+            usernameFilter.classList.add('hide');
             noAttemptsMsg.classList.remove('hide');
             attemptsTable.classList.add('hide');
+            showDetailsBtn.classList.add('hide');
+            attemptDetailsContainer.innerHTML = "";
             return;
         }
 
-        noAttemptsMsg.classList.add('hide');
-
-        // Build table rows
-        let rowsHtml = "";
+        // Build a list of all indices and render the full table
+        let allIndices = [];
         for (let i = 0; i < quizAttempts.length; i++) {
-            rowsHtml += '<tr data-index="' + i + '">';
-            rowsHtml += '<td>' + quizAttempts[i].userName + '</td>';
-            rowsHtml += '<td>' + quizAttempts[i].quiz.title + '</td>';
-            rowsHtml += '<td>' + quizAttempts[i].timestamp + '</td>';
-            rowsHtml += '</tr>';
+            allIndices.push(i);
         }
-        attemptsTbody.innerHTML = rowsHtml;
-        attemptsTable.classList.remove('hide');
-        showDetailsBtn.classList.remove('hide');
-
-        // Assign row click handlers for selection
-        let rows = attemptsTbody.querySelectorAll('tr');
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].addEventListener("click", function() {
-                // Remove selected from all rows
-                for (let k = 0; k < rows.length; k++) {
-                    rows[k].classList.remove('selected');
-                }
-                // Select the clicked row
-                rows[i].classList.add('selected');
-            });
-        }
+        renderAttemptsTable(allIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer);
+        usernameFilter.classList.remove('hide'); // show the filter UI
     });
+
+    // Filter attempts by username
+    filterBtn.addEventListener("click", function() {
+        let filterValue = filterUsernameInput.value.trim().toLowerCase();
+
+        let filteredIndices = [];
+        for (let i = 0; i < quizAttempts.length; i++) {
+            if (quizAttempts[i].userName.toLowerCase().includes(filterValue)) {
+                filteredIndices.push(i);
+            }
+        }
+        renderAttemptsTable(filteredIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer);
+    });
+
+    // Clear filter and show all attempts
+    clearFilterBtn.addEventListener("click", function() {
+        filterUsernameInput.value = "";
+        let allIndices = [];
+        for (let i = 0; i < quizAttempts.length; i++) {
+            allIndices.push(i);
+        }
+        renderAttemptsTable(allIndices, attemptsTable, attemptsTbody, noAttemptsMsg, showDetailsBtn, attemptDetailsContainer);
+    });
+
 
     // Show details
     showDetailsBtn.addEventListener("click", function() {

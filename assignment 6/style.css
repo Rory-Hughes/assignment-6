@@ -365,3 +365,117 @@ tr.selected:nth-child(even) {
 .show {
     display: block;
 }
+
+/* ============================================================
+   SUMMARY STATISTICS
+   ============================================================ */
+#attempts-stats {
+    background-color: #f7f7fb;
+    border: 1px solid #d0d0e8;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#attempts-stats h3 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #00008b;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #00008b;
+}
+
+#attempts-stats table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+#attempts-stats th {
+    background-color: #00008b;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: bold;
+}
+
+#attempts-stats td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddddef;
+    vertical-align: middle;
+}
+
+/* Highlight the stat label column */
+#attempts-stats td:first-child {
+    font-weight: bold;
+    color: #00008b;
+    white-space: nowrap;
+    width: 80px;
+}
+
+/* Alternating row tint */
+#attempts-stats tr:nth-child(even) td {
+    background-color: #eeeef8;
+}
+
+/* Score column — make it stand out */
+#attempts-stats td:nth-child(2) {
+    font-weight: bold;
+    color: #333;
+}
+
+#stats-average-table {
+    margin-top: 12px;
+}
+
+
+/* ============================================================
+   USERNAME FILTER
+   ============================================================ */
+#username-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+    padding: 14px 0 14px 0;
+    border-top: 1px solid #e0e0e0;
+}
+
+#username-filter label {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+#filter-username-input {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    flex: 1;
+    min-width: 140px;
+    max-width: 240px;
+}
+
+#filter-username-input:focus {
+    outline: none;
+    border-color: #00008b;
+}
+
+#filter-btn,
+#clear-filter-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+#clear-filter-btn {
+    background-color: white;
+    color: #00008b;
+    border-color: #00008b;
+}
+
+#clear-filter-btn:hover {
+    background-color: #eeeef8;
+}

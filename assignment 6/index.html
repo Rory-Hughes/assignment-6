@@ -77,6 +77,20 @@
 
             <button id="load-attempts-btn">Load Attempts</button>
 
+            <!-- Filter by username -->
+            <div id="username-filter" class="hide">
+                <label for="filter-username-input">Filter by Username:</label>
+                <input type="text" id="filter-username-input" placeholder="Enter username...">
+                <button id="filter-btn">Filter</button>
+                <button id="clear-filter-btn">Clear</button>
+            </div>
+
+            <!-- Summary statistics -->
+            <div id="attempts-stats" class="hide">
+                <h3>Summary Statistics</h3>
+                <div id="stats-content"></div>
+            </div>
+
             <!-- Empty state message -->
             <p id="no-attempts-msg" class="hide">No previous attempts found.</p>
 
